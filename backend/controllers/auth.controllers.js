@@ -19,17 +19,17 @@ export const signUp = async (req, res) => {
             return res.status(400).json({ message: "Mật khẩu phải ít nhất 6 kí tự!" })
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10)
+const hashedPassword = await bcrypt.hash(password, 10)
 
-        const user = await User.create({
+const user = await User.create({
             userName, email, password: hashedPassword
         })
 
-        const token = await genToken(user._id)
+const token = await genToken(user._id)
 
         res.cookie("token", token, {
             httpOnly: true,
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            maxAge: 7*24*60*60*1000,
             sameSite: "Strict",
             secure: false
         })
@@ -45,7 +45,6 @@ export const login = async (req, res) => {
 
     try {
         const { email, password } = req.body
-        //email already exist
         const user = await User.findOne({ email })
         if (!user) {
             return res.status(400).json({ message: "Người dùng không tồn tại!" })
@@ -60,7 +59,7 @@ export const login = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            maxAge: 7*24*60*60*1000,
             sameSite: "Strict",
             secure: false
         })

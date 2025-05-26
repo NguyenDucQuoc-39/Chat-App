@@ -17,8 +17,8 @@ function SignUp() {
     let [loading, setLoading] = useState(false);
     let [error, setError] = useState("");
     let dispatch = useDispatch();
-    
-    
+   
+
     const handleSignup = async (e) => {
         e.preventDefault();
         setLoading(true);

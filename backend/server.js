@@ -13,7 +13,7 @@ const app = express();
 
 app.use(cors({
     origin: "http://localhost:5173",
-    credentials: true,
+    credentials: true
 }))
 app.use(express.json())
 app.use(cookieParser())
@@ -22,6 +22,6 @@ app.use("/api/user", userRouter)
 
 app.listen(PORT, () => {
     connectDb()
-    console.log("Server Started!")
+    console.log("Server Started!", `Server Started on http://localhost:${PORT}`)
 });
  
