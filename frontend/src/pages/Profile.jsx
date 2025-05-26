@@ -38,6 +38,7 @@ const handleProfile = async (e) => {
                 { withCredentials: true });
             setSaving(false);
             dispatch(setUserData(result.data));
+            navigate("/");
         } catch (error) {
             console.log("Lỗi cập nhật profile:", error.response?.data || error.message);
             setSaving(false);

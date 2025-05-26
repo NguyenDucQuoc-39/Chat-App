@@ -37,3 +37,17 @@ export const editProfile = async (req, res) => {
         return res.status(500).json({ message: `Lỗi Profile ${error.message}` });
     }
 }
+
+export const getOtherUsers = async (req, res) => {
+    try {
+        const all = await User.find();
+        console.log(" All users in DB:", all);
+        let users = await User.find({ _id: { $ne: req.userId } }).select("-password");
+        if (!users) {
+            return res.status(400).json({ message: "Không tìm thấy người dùng" });
+        }
+        return res.status(200).json(users);
+    } catch (error) {
+        return res.status(500).json({ message: `Lỗi server ${error.message}` });
+    }
+}
