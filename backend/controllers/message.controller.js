@@ -1,4 +1,4 @@
-import uploadOnCloudinary from "../config/cloudinary";
+import uploadOnCloudinary from "../config/cloudinary.js";
 import Message from "../models/message.model.js";
 import Conversation from "../models/conversation.model.js"; 
 

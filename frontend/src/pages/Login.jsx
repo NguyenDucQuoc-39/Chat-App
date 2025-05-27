@@ -4,7 +4,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import { serverUrl } from "../main";
 import { useDispatch } from "react-redux";
-import { setUserData } from "../redux/userSlice";
+import { setSelectedUser, setUserData } from "../redux/userSlice";
 
 
 function Login() {
@@ -24,6 +24,7 @@ function Login() {
                 email, password
             }, { withCredentials: true });
             dispatch(setUserData(result.data));
+            dispatch(setSelectedUser(result.data));
             navigate("/");
             setEmail("");
             setPassword("");

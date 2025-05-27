@@ -6,6 +6,7 @@ const userSlice = createSlice({
         userData: null,
         otherUsers: null,
         selectedUser: null,
+        
 
     }, //setUserData("ayush")
     reducers: {
