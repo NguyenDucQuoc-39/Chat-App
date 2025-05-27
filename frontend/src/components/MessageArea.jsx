@@ -18,20 +18,23 @@ import { setOnlineUsers } from "../redux/userSlice.js";
 
 function MessageArea() {
     let { selectedUser,userData, socket} = useSelector(state => state.user);
+    let {messages} = useSelector(state => state.message);
     let dispatch = useDispatch();
     let [showPicker, setShowPicker] = useState(false);
     let [input,setInput] = useState("");
     let [frontendImage, setFrontendImage] = useState(null);
     let [backendImage, setBackendImage] = useState(null);
     let image = useRef();
-    let {messages} = useSelector(state => state.message);
+    
 
+    //Chọn ảnh
     const handleImage = (e) => {
         let file = e.target.files[0];
         setBackendImage(file);
         setFrontendImage(URL.createObjectURL(file));
     }
 
+    // Gửi tin nhắn
     const handleSendMessage = async (e) => {
         e.preventDefault();
         try {
@@ -43,6 +46,7 @@ function MessageArea() {
 
             let result = await axios.post(`${serverUrl}/api/message/send/${selectedUser._id}`, formData, {withCredentials: true});
             console.log("Message sent successfully:", result.data);
+
             dispatch(setMessages([...messages,result.data ])); // Cập nhật tin nhắn mới vào state
 
             // Gửi tin nhắn đến người nhận qua socket
@@ -66,11 +70,14 @@ function MessageArea() {
     }
 
    useEffect(() => {
-    socket.on("newMessage",(mess) => {
-      dispatch(setMessages([...messages,mess]));
-    })
-    return () => socket.off("newMessage");
-   },[messages,setMessages]);
+    if (!socket) return;
+    const handleNewMessage = (mess) => {
+      dispatch(setMessages([...messages, mess]));
+    };
+
+    socket.on("newMessage", handleNewMessage);
+    return () => socket.off("newMessage", handleNewMessage);
+    },[messages,setMessages]/*[socket, messages]*/);
 
     return (
         <div className={`lg:w-[70%] relative ${selectedUser ? "flex" : "hidden"} lg:flex w-full h-full bg-slate-200 border-l-2 border-gray-300`}>
@@ -86,7 +93,7 @@ function MessageArea() {
                         </div>
                         <h1 className="text-black font-semibold text-[20px]">{selectedUser?.name || "user"}</h1>
                     </div>
-                    <div className="w-full h-[550px] flex flex-col py-[30px] px-[20px] overflow-auto gap-[10px]">
+                    <div className="w-full h-[800px] flex flex-col py-[30px] px-[20px] overflow-auto gap-[10px]">
 
                         {showPicker && 
                         <div className='absolute bottom-[120px] left-[20px]'> <EmojiPicker width={250} height={350}  className="shadow-lg" onEmojiClick={onEmojiClick} /> </div>}

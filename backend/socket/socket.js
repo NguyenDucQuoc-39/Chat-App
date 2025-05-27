@@ -5,29 +5,35 @@ import { Server } from 'socket.io';
 let app = express();
 
 const server = http.createServer(app);
-const io = new Server(server, {
+const io = new Server(server,{
     cors: {
         origin: "http://localhost:5173"
     }
 })
 
 const userSocketMap = {};
+
 export const getReceiverSocketId = (receiver) => {
     return userSocketMap[receiver]
-};
+};  
 
 // Lắng nghe sự kiện kết nối từ client
 io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId;
-    if (userId != undefined) {
-        userSocketMap[userId] = socket.id; // Lưu socket ID của người dùng
+
+    if(userId != undefined) { 
+        userSocketMap[userId] = socket.id;
+        console.log("Người dùng đã kết nối:", userId); 
     }
-    io.emit("getOnlineUsers", Object.keys(userSocketMap)); // Phát sự kiện cho tất cả người dùng về danh sách người dùng trực tuyến
+     // Gửi danh sách người dùng đang online
+    io.emit("getOnlineUsers", Object.keys(userSocketMap)); 
+
 
     socket.on("disconnect", () => {
         delete userSocketMap[userId];
         io.emit("getOnlineUsers", Object.keys(userSocketMap));
-    })
+        console.log("Người dùng đã ngắt kết nối:", userId);
+    });
 })
 
-export { app, server, io };
+export {app, server, io};
