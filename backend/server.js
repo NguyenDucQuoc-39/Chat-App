@@ -7,10 +7,9 @@ dotenv.config();
 import cors from "cors";
 import userRouter from "./routes/user.routes.js";
 import messageRouter from "./routes/message.routes.js";
+import { app, server } from "./socket/socket.js";
 
 const PORT = process.env.PORT || 5000;
-
-const app = express();
 
 app.use(cors({
     origin: "http://localhost:5173",
@@ -22,8 +21,8 @@ app.use("/api/auth", authRouter)
 app.use("/api/user", userRouter)
 app.use("/api/message", messageRouter)
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     connectDb()
-    console.log("Server Started!", `Server Started on http://localhost:${PORT}`)
+    console.log("Server Đã Khởi Động!", `Server đã khởi động tại http://localhost:${PORT}`)
 });
  

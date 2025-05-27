@@ -1,4 +1,4 @@
-import React, { use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import gojo from "../assets/gojo.png";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,20 +7,17 @@ import { RiEmojiStickerLine } from "react-icons/ri";
 import { FaImages } from "react-icons/fa6";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import EmojiPicker from 'emoji-picker-react';
-import { useState } from "react";
 import SenderMessage from "./SenderMessage";
 import ReceiverMessage from "./receiverMessage";
 import axios from "axios";
 import { serverUrl } from "../main.jsx";
 import { setMessages } from "../redux/messageSlice.js";
-import { useRef } from "react";
-
-
+import { setOnlineUsers } from "../redux/userSlice.js";
 
 
 
 function MessageArea() {
-    let { selectedUser,userData } = useSelector(state => state.user);
+    let { selectedUser,userData, socket} = useSelector(state => state.user);
     let dispatch = useDispatch();
     let [showPicker, setShowPicker] = useState(false);
     let [input,setInput] = useState("");
@@ -43,9 +40,18 @@ function MessageArea() {
             if (backendImage) {
                 formData.append("image", backendImage);
             }
+
             let result = await axios.post(`${serverUrl}/api/message/send/${selectedUser._id}`, formData, {withCredentials: true});
             console.log("Message sent successfully:", result.data);
-            dispatch(setMessages([...messages,result.data]));
+            dispatch(setMessages([...messages,result.data ])); // Cập nhật tin nhắn mới vào state
+
+            // Gửi tin nhắn đến người nhận qua socket
+            if (socket) {
+                socket.emit("sendMessage", {
+                recipientId: selectedUser._id,
+                message: result.data, // hoặc message text + ảnh + user info
+                });
+}
             setInput("");
             setBackendImage(null);
             setFrontendImage(null);
@@ -59,7 +65,13 @@ function MessageArea() {
         setShowPicker(false);
     }
 
-   
+   useEffect(() => {
+    socket.on("newMessage",(mess) => {
+      dispatch(setMessages([...messages,mess]));
+    })
+    return () => socket.off("newMessage");
+   },[messages,setMessages]);
+
     return (
         <div className={`lg:w-[70%] relative ${selectedUser ? "flex" : "hidden"} lg:flex w-full h-full bg-slate-200 border-l-2 border-gray-300`}>
 

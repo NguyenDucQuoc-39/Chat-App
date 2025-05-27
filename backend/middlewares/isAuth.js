@@ -6,8 +6,7 @@ const isAuth = async (req, res, next) => {
         if (!token) {
             return res.status(400).json({ message: "Không tìm thấy token" });
         }
-        let verifyToken = await jwt.verify(token, process.env.JWT_SECRET);
-        console.log(verifyToken);
+        let verifyToken = await jwt.verify(token, process.env.JWT_SECRET);  
         req.userId = verifyToken.userId;
         next();
     } catch (error) {
