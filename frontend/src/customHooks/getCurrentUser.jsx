@@ -24,4 +24,4 @@ const getCurrentUser = () => {
         fetchUser();
     }, []);
 }
-export default getCurrentUser
+export default getCurrentUser;

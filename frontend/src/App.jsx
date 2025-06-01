@@ -45,10 +45,10 @@ function App() {
 
   return (
     <Routes>
-      <Route path='/login' element={!userData ? <Login /> : <Navigate to="/profile" />} />
-      <Route path='/signup' element={!userData ? <Signup /> : <Navigate to="/login" />} />
+      <Route path='/login' element={!userData ? <Login /> : <Navigate to="/" />} />
+      <Route path='/signup' element={!userData ? <Signup /> : <Navigate to="/" />} />
       <Route path='/' element={userData ? <Home /> : <Navigate to="/login" />} />
-      <Route path='/profile' element={userData ? <Profile /> : <Navigate to="/signup" />} />
+      <Route path='/profile' element={userData ? <Profile /> : <Navigate to="/login" />} />
 
     </Routes>
   )

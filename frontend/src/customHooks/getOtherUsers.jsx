@@ -4,8 +4,6 @@ import { serverUrl } from '../main.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOtherUsers, setUserData} from '../redux/userSlice';
 
-
-
 const getOtherUsers = () => {
     console.log("API /api/auth/others được gọi");
     let dispatch = useDispatch();
@@ -24,6 +22,6 @@ const getOtherUsers = () => {
 
         }
         fetchUser();
-    }, [userData]);
+    }, []);
 }
 export default getOtherUsers;

@@ -37,6 +37,10 @@ function MessageArea() {
     // Gửi tin nhắn
     const handleSendMessage = async (e) => {
         e.preventDefault();
+        if(input.length ==0 && !backendImage) {
+            return; // Không gửi tin nhắn nếu không có nội dung
+        }
+
         try {
             let formData = new FormData();
             formData.append("message", input);
@@ -49,13 +53,13 @@ function MessageArea() {
 
             dispatch(setMessages([...messages,result.data ])); // Cập nhật tin nhắn mới vào state
 
-            // Gửi tin nhắn đến người nhận qua socket
-            if (socket) {
-                socket.emit("sendMessage", {
-                recipientId: selectedUser._id,
-                message: result.data, // hoặc message text + ảnh + user info
-                });
-}
+            // // Gửi tin nhắn đến người nhận qua socket
+            // if (socket) {
+            //     socket.emit("sendMessage", {
+            //     recipientId: selectedUser._id,
+            //     message: result.data, // hoặc message text + ảnh + user info
+            //     });
+            // }
             setInput("");
             setBackendImage(null);
             setFrontendImage(null);
@@ -69,6 +73,15 @@ function MessageArea() {
         setShowPicker(false);
     }
 
+    /*useEffect(() => {
+        socket.on("newMessage", (mess) => {
+            dispatch(setMessages([...messages, mess]));
+        });
+        return () => socket.off("newMessage");
+    }, [socket, messages, dispatch]);*/
+
+
+    // Lấy tin nhắn khi người dùng chọn cuộc trò chuyện
    useEffect(() => {
     if (!socket) return;
     const handleNewMessage = (mess) => {
@@ -77,7 +90,7 @@ function MessageArea() {
 
     socket.on("newMessage", handleNewMessage);
     return () => socket.off("newMessage", handleNewMessage);
-    },[messages,setMessages]/*[socket, messages]*/);
+    },[messages,setMessages]);
 
     return (
         <div className={`lg:w-[70%] relative ${selectedUser ? "flex" : "hidden"} lg:flex w-full h-full bg-slate-200 border-l-2 border-gray-300`}>
@@ -91,15 +104,16 @@ function MessageArea() {
                         <div className='w-[50px] h-[50px] rounded-full overflow-hidden flex justify-center items-center bg-white shadow-lg cursor-pointer'>
                             <img src={selectedUser?.image || gojo} alt="" className='h-[100%]' />
                         </div>
-                        <h1 className="text-black font-semibold text-[20px]">{selectedUser?.name || "user"}</h1>
+                        <h1 className="text-white font-semibold text-[20px]">{selectedUser?.name || "user"}</h1>
                     </div>
-                    <div className="w-full h-[800px] flex flex-col py-[30px] px-[20px] overflow-auto gap-[10px]">
+                    <div className="w-full h-[80vh] flex flex-col py-[30px] px-[20px] overflow-auto gap-[10px]">
 
                         {showPicker && 
-                        <div className='absolute bottom-[120px] left-[20px]'> <EmojiPicker width={250} height={350}  className="shadow-lg" onEmojiClick={onEmojiClick} /> </div>}
+                        <div className='absolute bottom-[120px] left-[20px]'> <EmojiPicker width={250} height={350}  className="shadow-lg z-[100]" onEmojiClick={onEmojiClick} /> </div>}
                         
                         {messages && messages?.map((mess) => (
-                            mess.sender === userData._id ? <SenderMessage image={mess.image} message={mess.message} />:
+                            mess.sender === userData._id ? 
+                                <SenderMessage image={mess.image} message={mess.message} />:
                                 <ReceiverMessage image={mess.image} message={mess.message}  /> 
 
                         ))}
@@ -111,7 +125,6 @@ function MessageArea() {
                     <h1 className="text-black font-bold text-[50px]">Welcome to Chat App</h1>
                     <span className="text-black font-semibold text-[30px]">Chat with your friends !</span>
                 </div>}
-
             {selectedUser && <div className='w-full lg:w-[70%] h-[60px] fixed bottom-[20px] flex items-center justify-center'>
 
                 <img src={frontendImage} alt="" className='w-[80px] absolute bottom-[100px] right-[20%] rounded-lg' />
@@ -121,12 +134,13 @@ function MessageArea() {
                     </div>
                     <input type="file"  accept="image/*" hidden ref={image} onChange={handleImage} />
                     <input type="text" className='w-full h-full px-[10px] outline-none border-0 text-[19px] text-white bg-transparent ' placeholder="Nhập tin nhắn..." onChange={(e) => setInput(e.target.value)} value={input}/>
-                    <div className='mr-[5px]' onClick={() => image.current.click()}>
+                    <div className='mr-[10px]' onClick={() => image.current.click()}>
                         <FaImages className='w-[30px] h-[30px] text-white cursor-pointer' />
                     </div>
-                    <button className='mr-[15px]'>
+                    {input.length > 0 && !backendImage && (
+                    <button className='mr-[10px]'>
                         <RiSendPlane2Fill className='w-[30px] h-[30px] text-white cursor-pointer' />
-                    </button>
+                    </button>)}
                 </form>
             </div>}
         </div>

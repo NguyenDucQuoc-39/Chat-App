@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
- 
+
 const userSlice = createSlice({
     name: "user",
     initialState: {
@@ -7,7 +7,8 @@ const userSlice = createSlice({
         otherUsers: null,
         selectedUser: null,
         socket: null,
-        onlineUsers: null
+        onlineUsers: null,
+        searchData: null
 
 
     }, //setUserData("ayush")
@@ -27,8 +28,11 @@ const userSlice = createSlice({
         setOnlineUsers: (state, action) => {
             state.onlineUsers = action.payload;
         },
+        setSearchData: (state, action) => {
+            state.searchData = action.payload;
+        }
     },
 });
 
-export const { setUserData, setOtherUsers, setSelectedUser, setSocket, setOnlineUsers } = userSlice.actions;
+export const { setUserData, setOtherUsers, setSelectedUser, setSocket, setOnlineUsers, setSearchData } = userSlice.actions;
 export default userSlice.reducer;
