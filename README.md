@@ -1,7 +1,7 @@
 # Real-Time Chat App.
 
 ## 💬 Giới Thiệu
-**Ứng dụng Chat App ** là một dự án nhằm mục tiêu thực hành và nâng cao kỹ năng phát triển ứng dụng web thời gian thực.
+**Ứng dụng Chat App** là một dự án nhằm mục tiêu thực hành và nâng cao kỹ năng phát triển ứng dụng web thời gian thực.
 
 ## 📌Mục Tiêu Học Tập
 - **Cài đặt xác thực người dùng bằng JWT để đảm bảo bảo mật đăng nhập và phân quyền truy cập**.
