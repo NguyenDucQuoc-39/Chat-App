@@ -1,7 +1,8 @@
-const express = require('express');
-const { editProfile, getCurrentUser, getOtherUsers, search } = require('../controllers/user.controller');
-const isAuth = require('../middlewares/isAuth');
-const { upload } = require('../middlewares/multer');
+import express from 'express';
+import {  editProfile ,getCurrentUser, getOtherUsers, search } from '../controllers/user.controller.js';
+import isAuth from '../middlewares/isAuth.js';
+import { upload } from '../middlewares/multer.js';
+import multer from 'multer';
 
 const userRouter = express.Router();
 
@@ -10,4 +11,4 @@ userRouter.get("/others", isAuth, getOtherUsers);  // lấy list user khác
 userRouter.put("/profile", isAuth, upload.single("image"), editProfile); //sửa infor cá nhân
 userRouter.get("/search", isAuth, search); 
 
-module.exports = userRouter;
+export default userRouter;
