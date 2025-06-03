@@ -10,7 +10,6 @@ const userSlice = createSlice({
         onlineUsers: null,
         searchData: null
 
-
     }, //setUserData("ayush")
     reducers: {
         setUserData: (state, action) => {

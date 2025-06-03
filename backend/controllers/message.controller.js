@@ -1,14 +1,14 @@
-import uploadOnCloudinary from "../config/cloudinary.js";
+import uploadOnCloudinary from "../config/cloudinary.js"; // Hàm upload ảnh lên Cloudinary
 import Message from "../models/message.model.js";
 import Conversation from "../models/conversation.model.js"; 
-import { getReceiverSocketId } from "../socket/socket.js";
-import { io } from "../socket/socket.js"; // Import the io instance
+import { getReceiverSocketId } from "../socket/socket.js"; // Hàm lấy socketId của người nhận
+import { io } from "../socket/socket.js"; //Đối tượng socket.io để gửi event realtime
 
 export const sendMessage = async (req, res) => {
     try {
         let sender = req.userId;
-        let {receiver} = req.params;
-        let {message} = req.body;
+        let {receiver} = req.params; // Lấy id người nhận từ URL
+        let {message} = req.body; 
         
         let image;
         if(req.file){
@@ -18,21 +18,23 @@ export const sendMessage = async (req, res) => {
         let conversation = await Conversation.findOne({
             participants: { $all: [sender, receiver] }
         });
-
+        
+        //tạo tin nhắn mới
         let newMessage = await Message.create({
             sender, receiver, message, image
         });
-
+         // Nếu chưa có cuộc trò chuyện, tạo mới
         if(!conversation) {
             conversation = await Conversation.create({
                 participants: [sender, receiver],
                 messages: [newMessage._id]
             });
         }else {
+        // Nếu đã có, thêm id tin nhắn mới vào mảng messages
             conversation.messages.push(newMessage._id);
             await conversation.save();
         }
-        // Emit the new message to the receiver's socket
+         // Gửi tin nhắn realtime cho người nhận nếu đang online
         const receiverSocketId = getReceiverSocketId(receiver);
         if(receiverSocketId) {
             io.to(receiverSocketId).emit("newMessage", newMessage);
@@ -48,6 +50,8 @@ export const getMessages = async (req, res) => {
     try {
         let sender = req.userId;
         let {receiver} = req.params;
+
+        // Tìm cuộc trò chuyện giữa 2 user và lấy toàn bộ tin nhắn (populate)
         let conversation = await Conversation.findOne({
             participants: { $all: [sender,receiver]}
         }).populate("messages");

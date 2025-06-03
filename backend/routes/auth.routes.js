@@ -5,6 +5,7 @@ import { getCurrentUser } from "../controllers/user.controller.js";
 import { getOtherUsers } from "../controllers/user.controller.js";
 const authRouter = express.Router()
 
+// định nghĩa các endpoint(đường dẫn API) 
 authRouter.post("/signup",signUp)
 authRouter.post("/login",login)
 authRouter.get("/logout",logOut)

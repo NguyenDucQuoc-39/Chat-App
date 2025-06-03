@@ -4,7 +4,7 @@ const messageSlice = createSlice({
     name: "message",
     initialState: {
         messages: [],
-    }, //setUserData("ayush")
+    }, //setUserData("")
     reducers: {
         setMessages: (state, action) => {
             state.messages = action.payload;

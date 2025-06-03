@@ -73,12 +73,6 @@ function MessageArea() {
         setShowPicker(false);
     }
 
-    /*useEffect(() => {
-        socket.on("newMessage", (mess) => {
-            dispatch(setMessages([...messages, mess]));
-        });
-        return () => socket.off("newMessage");
-    }, [socket, messages, dispatch]);*/
 
 
     // Lấy tin nhắn khi người dùng chọn cuộc trò chuyện
@@ -122,8 +116,8 @@ function MessageArea() {
 
             {!selectedUser &&
                 <div className='w-full h-full flex flex-col justify-center items-center '>
-                    <h1 className="text-black font-bold text-[50px]">Welcome to Chat App</h1>
-                    <span className="text-black font-semibold text-[30px]">Chat with your friends !</span>
+                    <h1 className="text-black font-bold text-[50px]">Chào mừng đến với Chat App</h1>
+                    <span className="text-black font-semibold text-[30px]">Nhắn với bạn bè tại đây !</span>
                 </div>}
             {selectedUser && <div className='w-full lg:w-[70%] h-[60px] fixed bottom-[20px] flex items-center justify-center'>
 

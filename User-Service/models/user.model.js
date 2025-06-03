@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
-}, { timestamps: true })
+}, { timestamps: true }) // Tự động thêm createdAt, updatedAt
 
 const User = mongoose.model("User", userSchema)
 
-export default User
+module.exports = User;
